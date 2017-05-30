@@ -42,10 +42,12 @@ public class DeterminePlayerClass {
 		if (!(event.getEntityLiving() instanceof EntityPlayer))
 			return;
 
-		EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+		if(!event.getEntityLiving().world.isRemote)
+		{
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 
-		determinePlayerClass(player);
-		
+			determinePlayerClass(player);
+		}
 	}
 
 	private void determinePlayerClass(EntityPlayer player){
@@ -56,7 +58,7 @@ public class DeterminePlayerClass {
 		ItemStack offhand = player.getHeldItemOffhand();
 
 		PlayerClass playerclass = PlayerClass.get(player);
-		
+
 		if (!offhand.isEmpty())
 			if(offhand.getItem() instanceof ItemShield){
 				shieldName = playerclass.vanillaShieldSuffix();
@@ -68,11 +70,13 @@ public class DeterminePlayerClass {
 		for (ItemStack is : player.inventory.armorInventory) {
 			if (is == null) {
 				playerclass.setPlayerClass(classname+shieldName);//no class (no)vanilla shield
+				sync(player, classname, shieldName);
 				return;//if one of the items is null, jump out. all items need to be worn
 			}
 			else // if there is one item that is no AbstractArmor, skip the setting of the player class
 				if (!(is.getItem() instanceof ModeledArmor)){
 					playerclass.setPlayerClass(classname+shieldName);//no class (no)vanilla shield
+					sync(player, classname, shieldName);
 					return;//no need to check for the next if one item is not class armour
 				}
 		}
@@ -88,6 +92,7 @@ public class DeterminePlayerClass {
 			classname = a;
 		else{
 			playerclass.setPlayerClass(classname+shieldName);//noclass (no)vanilla shield
+			sync(player, classname, shieldName);
 			return; //if there is a difference, jump out
 		}
 		//check if any other shields
@@ -99,7 +104,12 @@ public class DeterminePlayerClass {
 		if(!playerclass.getPlayerClass().equals(classname+shieldName))
 			playerclass.setPlayerClass(classname+shieldName);
 
+		sync(player, classname, shieldName);
+	}
+	
+	private void sync(EntityPlayer player, String classname, String shieldName){
 		if(player instanceof EntityPlayerMP)
 			NetworkHandler.NETWORK.sendTo(new CPacketSyncPlayerClass(classname+shieldName), (EntityPlayerMP)player);
+	
 	}
 }
