@@ -31,7 +31,7 @@ public class ItemRegistry {
 		GameRegistry.register(item);
 	}
 
-	private static String [][] recipePatterns = new String[][] { 
+	private static String [][] armorRecipePaterns = new String[][] { 
 		{ "XXX", "X X" },
 		{ "X X", "XXX", "XXX" }, 
 		{ "XXX", "X X", "X X" },
@@ -42,13 +42,13 @@ public class ItemRegistry {
 		int index = 3-slot.getIndex();
 
 		GameRegistry.addRecipe(new ItemStack(result), new Object[] {
-				recipePatterns[index], 'X', armorItem });
+				armorRecipePaterns[index], 'X', armorItem });
 	}
 	
 	public static void addArmorRecipe(Item result, Item armorItem, EntityEquipmentSlot slot){
 		int index = 3-slot.getIndex();
 
 		GameRegistry.addRecipe(new ItemStack(result), new Object[] {
-				recipePatterns[index], 'X', armorItem });
+				armorRecipePaterns[index], 'X', armorItem });
 	}
 }

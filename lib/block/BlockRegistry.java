@@ -10,19 +10,4 @@ public class BlockRegistry {
 	public static void registerBlock(Block block){
 		GameRegistry.register(block);
 	}
-	
-	@Deprecated
-	public static void registerBlockWithItem(Block block){
-		GameRegistry.register(block);
-		ItemBlock item = new ItemBlock(block);
-		ItemRegistry.registerItem(item);
-		//TODO register model for item to same name as block
-	}
-	
-	@Deprecated
-	public void registerBlockWithItem(Block block, ItemBlock item){
-		GameRegistry.register(block);
-		ItemRegistry.registerItem(item);
-		//TODO register model for item to same name as block
-	}
 }

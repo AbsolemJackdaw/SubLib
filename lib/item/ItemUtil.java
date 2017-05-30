@@ -19,7 +19,7 @@ public class ItemUtil {
 	/**
 	 * Construct an {@link ItemStack} from a string in the format modid:itemName@damagexstackSize.
 	 *
-	 * @param str the str
+	 * @param str the string
 	 * @return the item
 	 */
 	public static ItemStack getItemStack(String str)

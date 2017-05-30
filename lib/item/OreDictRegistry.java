@@ -51,6 +51,6 @@ public class OreDictRegistry {
 		OreDictionary.registerOre("cropFruit", Items.APPLE);
 		OreDictionary.registerOre("cropFruit", Items.MELON);
 
-		OreDictionary.registerOre("itemFish", Items.FISH);//salmon
+		OreDictionary.registerOre("itemFish", Items.FISH);
 	}
 }
