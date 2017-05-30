@@ -45,6 +45,7 @@ public class DeterminePlayerClass {
 		EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 
 		determinePlayerClass(player);
+		
 	}
 
 	private void determinePlayerClass(EntityPlayer player){
@@ -54,22 +55,24 @@ public class DeterminePlayerClass {
 
 		ItemStack offhand = player.getHeldItemOffhand();
 
+		PlayerClass playerclass = PlayerClass.get(player);
+		
 		if (!offhand.isEmpty())
 			if(offhand.getItem() instanceof ItemShield){
-				shieldName = PlayerClass.armorClass(player).armorClass(player).armorClass(player).getVanillaShieldSuffix();
-				PlayerClass.armorClass(player).armorClass(player).set(classname+shieldName);//noclass vanilla shield
+				shieldName = playerclass.vanillaShieldSuffix();
+				playerclass.setPlayerClass(classname+shieldName);//noclass vanilla shield
 			}else
-				PlayerClass.armorClass(player).armorClass(player).set(classname+shieldName);//noclass noshield
+				playerclass.setPlayerClass(classname+shieldName);//noclass noshield
 
 		/*checking armor...*/
 		for (ItemStack is : player.inventory.armorInventory) {
 			if (is == null) {
-				PlayerClass.armorClass(player).armorClass(player).set(classname+shieldName);//noclass (no)vanilla shield
+				playerclass.setPlayerClass(classname+shieldName);//no class (no)vanilla shield
 				return;//if one of the items is null, jump out. all items need to be worn
 			}
 			else // if there is one item that is no AbstractArmor, skip the setting of the player class
 				if (!(is.getItem() instanceof ModeledArmor)){
-					PlayerClass.armorClass(player).armorClass(player).set(classname+shieldName);//noclass (no)vanilla shield
+					playerclass.setPlayerClass(classname+shieldName);//no class (no)vanilla shield
 					return;//no need to check for the next if one item is not class armour
 				}
 		}
@@ -84,17 +87,17 @@ public class DeterminePlayerClass {
 		if(a.equals(b) && a.equals(c) && a.equals(d))
 			classname = a;
 		else{
-			PlayerClass.armorClass(player).armorClass(player).set(classname+shieldName);//noclass (no)vanilla shield
+			playerclass.setPlayerClass(classname+shieldName);//noclass (no)vanilla shield
 			return; //if there is a difference, jump out
 		}
 		//check if any other shields
 		ModeledArmor helm = ((ModeledArmor) player.inventory.getStackInSlot(HELM).getItem());
-		if (!offhand.isEmpty() && !shieldName.equals(PlayerClass.armorClass(player).armorClass(player).getVanillaShieldSuffix())) 
+		if (!offhand.isEmpty() && !shieldName.equals(playerclass.get(player).vanillaShieldSuffix())) 
 			if (offhand.getItem().equals(helm.getLinkedShieldItem()))
-				shieldName = PlayerClass.armorClass(player).armorClass(player).getClassShieldSuffix();
+				shieldName = playerclass.get(player).classShieldSuffix();
 
-		if(!PlayerClass.armorClass(player).armorClass(player).get().equals(classname+shieldName))
-			PlayerClass.armorClass(player).armorClass(player).set(classname+shieldName);
+		if(!playerclass.getPlayerClass().equals(classname+shieldName))
+			playerclass.setPlayerClass(classname+shieldName);
 
 		if(player instanceof EntityPlayerMP)
 			NetworkHandler.NETWORK.sendTo(new CPacketSyncPlayerClass(classname+shieldName), (EntityPlayerMP)player);

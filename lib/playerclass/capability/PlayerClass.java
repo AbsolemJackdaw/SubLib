@@ -25,7 +25,7 @@ public class PlayerClass {
 		this.player = newPlayer;
 	}
 
-	public static PlayerClass armorClass(EntityPlayer player)
+	public static PlayerClass get(EntityPlayer player)
 	{
 		return player.getCapability(PlayerClassCapability.CAPABILITY, null);
 	}
@@ -39,15 +39,15 @@ public class PlayerClass {
 
 	}
 	
-	public void set(String name){
-		playerClass = name;
+	public void setPlayerClass(String playerClass) {
+		this.playerClass = playerClass;
 	}
 	
-	public String get(){
+	public String getPlayerClass() {
 		return playerClass;
 	}
 	
-	public boolean isInstanceOf(String className){
+	public boolean isPlayerClass(String className){
 		return playerClass.contains(className);
 	}
 	
@@ -59,11 +59,13 @@ public class PlayerClass {
 		return playerClass.contains(shielded_vanilla);
 	}
 	
-	public String getClassShieldSuffix(){
+	/**suffix added when player is wearing a matching shield from the armor item class*/
+	public String classShieldSuffix(){
 		return shielded_class;
 	}
 	
-	public String getVanillaShieldSuffix(){
+	/**suffix added when the player is wearing any other shield*/
+	public String vanillaShieldSuffix(){
 		return shielded_vanilla;
 	}
 }
