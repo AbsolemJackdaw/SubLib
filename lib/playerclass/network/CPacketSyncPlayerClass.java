@@ -1,8 +1,8 @@
 package lib.playerclass.network;
 
 import io.netty.buffer.ByteBuf;
+import lib.Lib;
 import lib.playerclass.capability.PlayerClass;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -34,10 +34,10 @@ public class CPacketSyncPlayerClass implements IMessage{
 
 		@Override
 		public IMessage onMessage(CPacketSyncPlayerClass message, MessageContext ctx) {
-				Minecraft.getMinecraft().addScheduledTask(()->{
+				Lib.proxy.getMC().addScheduledTask(()->{
 					if(message.classname != null)
 					{
-						PlayerClass.get(Minecraft.getMinecraft().player).setPlayerClass(message.classname);
+						PlayerClass.get(Lib.proxy.clientPlayer()).setPlayerClass(message.classname);
 					}
 				});
 			return null;
