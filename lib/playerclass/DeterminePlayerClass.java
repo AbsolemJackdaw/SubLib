@@ -8,6 +8,7 @@ import lib.playerclass.network.NetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,7 +52,6 @@ public class DeterminePlayerClass {
 	}
 
 	private void determinePlayerClass(EntityPlayer player){
-
 		String classname = "noClass";
 		String shieldName = "_noShield";
 
@@ -60,11 +60,16 @@ public class DeterminePlayerClass {
 		PlayerClass playerclass = PlayerClass.get(player);
 
 		if (!offhand.isEmpty())
-			if(offhand.getItem() instanceof ItemShield){
+		{
+			if(offhand.getItem() instanceof ItemShield)
+			{
 				shieldName = playerclass.vanillaShieldSuffix();
 				playerclass.setPlayerClass(classname+shieldName);//noclass vanilla shield
-			}else
-				playerclass.setPlayerClass(classname+shieldName);//noclass noshield
+			}
+			//custom shields get handled later
+		}
+		else
+			playerclass.setPlayerClass(classname+shieldName);//noclass noshield
 
 		/*checking armor...*/
 		for (ItemStack is : player.inventory.armorInventory) {
@@ -97,8 +102,8 @@ public class DeterminePlayerClass {
 		}
 		//check if any other shields
 		ModeledArmor helm = ((ModeledArmor) player.inventory.getStackInSlot(HELM).getItem());
-		if (!offhand.isEmpty() && !shieldName.equals(playerclass.get(player).vanillaShieldSuffix())) 
-			if (offhand.getItem().equals(helm.getLinkedShieldItem()))
+		if (!offhand.isEmpty() && shieldName.equals("_noShield") && helm.getLinkedShieldItem() != Items.AIR) 
+			if (offhand.getItem() == helm.getLinkedShieldItem())
 				shieldName = playerclass.get(player).classShieldSuffix();
 
 		if(!playerclass.getPlayerClass().equals(classname+shieldName))
@@ -106,10 +111,10 @@ public class DeterminePlayerClass {
 
 		sync(player, classname, shieldName);
 	}
-	
+
 	private void sync(EntityPlayer player, String classname, String shieldName){
 		if(player instanceof EntityPlayerMP)
 			NetworkHandler.NETWORK.sendTo(new CPacketSyncPlayerClass(classname+shieldName), (EntityPlayerMP)player);
-	
+
 	}
 }
