@@ -9,8 +9,8 @@ import lib.playerclass.capability.PlayerClassCapability;
 import lib.playerclass.network.NetworkHandler;
 import lib.proxy.ServerProxy;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = Lib.MODID, name = Lib.NAME, version = Lib.VERSION)
