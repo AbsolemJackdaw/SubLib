@@ -4,7 +4,9 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemRegistry {
@@ -28,7 +30,7 @@ public class ItemRegistry {
 	}
 
 	public static void registerItem(Item item){
-		GameRegistry.register(item);
+		ForgeRegistries.ITEMS.register(item);
 	}
 
 	private static String [][] armorRecipePaterns = new String[][] { 
@@ -38,17 +40,9 @@ public class ItemRegistry {
 		{ "X X", "X X" } 
 	};
 
-	public static void addArmorRecipe(Item result, ItemStack armorItem, EntityEquipmentSlot slot){
+	public static void addArmorRecipe(String name, String group, Item result, ItemStack armorItem, EntityEquipmentSlot slot){
 		int index = 3-slot.getIndex();
-
-		GameRegistry.addRecipe(new ItemStack(result), new Object[] {
-				armorRecipePaterns[index], 'X', armorItem });
-	}
-	
-	public static void addArmorRecipe(Item result, Item armorItem, EntityEquipmentSlot slot){
-		int index = 3-slot.getIndex();
-
-		GameRegistry.addRecipe(new ItemStack(result), new Object[] {
-				armorRecipePaterns[index], 'X', armorItem });
+		GameRegistry.addShapedRecipe(new ResourceLocation(""), new ResourceLocation(""), new ItemStack(result), armorRecipePaterns[index], 'X', armorItem);
+		
 	}
 }

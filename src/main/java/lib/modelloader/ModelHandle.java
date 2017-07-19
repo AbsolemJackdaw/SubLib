@@ -11,11 +11,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
@@ -23,8 +24,6 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.IModelUVLock;
-import net.minecraftforge.client.model.IRetexturableModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.pipeline.LightUtil;
@@ -221,7 +220,7 @@ public class ModelHandle
 	private static void renderModel(IBakedModel model, VertexFormat fmt)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, fmt);
 		for (BakedQuad bakedquad : model.getQuads(null, null, 0))
 		{
@@ -233,7 +232,7 @@ public class ModelHandle
 	private static void renderModel(IBakedModel model, VertexFormat fmt, int color)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldrenderer = tessellator.getBuffer();
+		BufferBuilder worldrenderer = tessellator.getBuffer();
 		worldrenderer.begin(GL11.GL_QUADS, fmt);
 		for (BakedQuad bakedquad : model.getQuads(null, null, 0))
 		{
@@ -251,15 +250,13 @@ public class ModelHandle
 		try
 		{
 			IModel mod = ModelLoaderRegistry.getModel(handle.getModel());
-			if (mod instanceof IRetexturableModel && handle.getTextureReplacements().size() > 0)
+			if (handle.getTextureReplacements().size() > 0)
 			{
-				IRetexturableModel rtm = (IRetexturableModel) mod;
-				mod = rtm.retexture(ImmutableMap.copyOf(handle.getTextureReplacements()));
+				mod = mod.retexture(ImmutableMap.copyOf(handle.getTextureReplacements()));
 			}
-			if (handle.uvLocked() && mod instanceof IModelUVLock)
+			if (handle.uvLocked())
 			{
-				IModelUVLock uvl = (IModelUVLock) mod;
-				mod = uvl.uvlock(true);
+				mod = mod.uvlock(true);
 			}
 			IModelState state = handle.getState();
 			if (state == null) state = mod.getDefaultState();

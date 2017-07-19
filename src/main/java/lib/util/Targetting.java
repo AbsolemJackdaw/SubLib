@@ -49,16 +49,16 @@ public class Targetting {
 			double closest = farDist;
 
 			Vec3d dirVec = viewEntity.getLookVec();
-			Vec3d lookFarCoord = playerPosition.addVector(dirVec.xCoord
-					* parDistance, dirVec.yCoord * parDistance, dirVec.zCoord
+			Vec3d lookFar = playerPosition.addVector(dirVec.x
+					* parDistance, dirVec.y * parDistance, dirVec.z
 					* parDistance);
 
 			List<EntityLivingBase> targettedEntities = worldObj.getEntitiesWithinAABB(
 					EntityLivingBase.class,
 					viewEntity.getEntityBoundingBox().
-					addCoord(dirVec.xCoord * parDistance,
-							dirVec.yCoord * parDistance,
-							dirVec.zCoord * parDistance).expand(0.1,0.1, 0.1));
+					grow(dirVec.x * parDistance,
+							dirVec.y * parDistance,
+							dirVec.z * parDistance).expand(0.1,0.1, 0.1));
 
 			targettedEntities.remove(viewEntity);
 
@@ -67,7 +67,7 @@ public class Targetting {
 					double precheck = viewEntity.getDistanceToEntity(targettedEntity);
 
 					RayTraceResult mopElIntercept = targettedEntity.getEntityBoundingBox().
-							calculateIntercept(playerPosition, lookFarCoord);
+							calculateIntercept(playerPosition, lookFar);
 
 					if (mopElIntercept != null) {
 						if (precheck < closest) {
@@ -95,16 +95,16 @@ public class Targetting {
 		}
 
 		Vec3d direction = new Vec3d(
-				look.xCoord * distance,
-				look.yCoord * distance,
-				look.zCoord * distance);
+				look.x * distance,
+				look.y * distance,
+				look.z * distance);
 
 		end = start.add(direction);
 
 		Vec3d hitPosition = null;
 		List<Entity> list = player.world.getEntitiesInAABBexcluding(player,
 				player.getEntityBoundingBox()
-				.addCoord(direction.xCoord, direction.yCoord, direction.zCoord)
+				.grow(direction.x, direction.y, direction.z)
 				.expand(1.0, 1.0, 1.0), Predicates.and(EntitySelectors.NOT_SPECTATING,
 						Entity::canBeCollidedWith));
 
@@ -116,7 +116,7 @@ public class Targetting {
 			AxisAlignedBB bounds = entity.getEntityBoundingBox().expand(border, border, border);
 			RayTraceResult intercept = bounds.calculateIntercept(start, end);
 
-			if (bounds.isVecInside(start))
+			if (bounds.contains(start))
 			{
 				if (distanceToEntity >= 0.0D)
 				{
@@ -184,7 +184,7 @@ public class Targetting {
 		}
 
 		Vec3d look = player.getLook(partialTicks);
-		end = start.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
+		end = start.addVector(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
 
 		RayTraceResult mop = player.world.rayTraceBlocks(start, end, false, true, false);
 

@@ -28,11 +28,11 @@ public class DeterminePlayerClass {
 	}
 
 	@SubscribeEvent
-	public void onAttach(AttachCapabilitiesEvent.Entity event){
-		final Entity entity = event.getEntity();
-
-		if (entity instanceof EntityPlayer)
-			event.addCapability(CapabilityPlayerClassProvider.KEY, new CapabilityPlayerClassProvider((EntityPlayer)entity)); 
+	public void onAttach(AttachCapabilitiesEvent event){
+		final Object object = event.getObject();
+		
+		if (object instanceof EntityPlayer)
+			event.addCapability(CapabilityPlayerClassProvider.KEY, new CapabilityPlayerClassProvider((EntityPlayer)object)); 
 
 	}
 
