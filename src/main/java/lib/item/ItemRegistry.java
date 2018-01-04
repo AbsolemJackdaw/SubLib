@@ -42,7 +42,7 @@ public class ItemRegistry {
 
 	public static void addArmorRecipe(String name, String group, Item result, ItemStack armorItem, EntityEquipmentSlot slot){
 		int index = 3-slot.getIndex();
-		GameRegistry.addShapedRecipe(new ResourceLocation(""), new ResourceLocation(""), new ItemStack(result), armorRecipePaterns[index], 'X', armorItem);
+		GameRegistry.addShapedRecipe(new ResourceLocation(name), new ResourceLocation(group), new ItemStack(result), armorRecipePaterns[index], 'X', armorItem);
 		
 	}
 }
