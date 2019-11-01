@@ -1,17 +1,16 @@
 package lib.playerclass.capability;
 
-import javax.annotation.Nullable;
-
 import lib.Lib;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
-public class CapabilityPlayerClassProvider implements ICapabilitySerializable<NBTTagCompound>
-{
+public class CapabilityPlayerClassProvider implements ICapabilitySerializable<CompoundNBT> {
+
     /**
      * Unique key to identify the attached provider from others
      */
@@ -22,34 +21,41 @@ public class CapabilityPlayerClassProvider implements ICapabilitySerializable<NB
      */
     final PlayerClass data = new PlayerClass();
 
-    /**gets called before world is initiated. player.worldObj will return null here !*/
-    public CapabilityPlayerClassProvider(EntityPlayer player){
+    /**
+     * gets called before world is initiated. player.worldObj will return null here!
+     */
+    public CapabilityPlayerClassProvider(PlayerEntity player) {
+
         data.setPlayer(player);
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
-    {
-        if (capability == PlayerClassCapability.CAPABILITY)
-            return true;
-        return false;
-    }
+    public CompoundNBT serializeNBT() {
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing){
-        if (capability == PlayerClassCapability.CAPABILITY)
-            return (T)data;
-        return null;
+        return (CompoundNBT) PlayerClassCapability.CAPABILITY.writeNBT(data, null);
     }
 
     @Override
-    public NBTTagCompound serializeNBT(){
-        return (NBTTagCompound) PlayerClassCapability.CAPABILITY.writeNBT(data, null);
+    public void deserializeNBT(CompoundNBT nbt) {
+
+        PlayerClassCapability.CAPABILITY.readNBT(data, null, nbt);
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt){
-    	PlayerClassCapability.CAPABILITY.readNBT(data, null, nbt);
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+
+        if (cap == PlayerClassCapability.CAPABILITY)
+            return (LazyOptional<T>) LazyOptional.of(this::getImpl);
+
+        return LazyOptional.empty();
     }
+
+    private PlayerClass getImpl() {
+
+        if (data != null) {
+            return data;
+        }
+        return new PlayerClass();
+    }
+
 }

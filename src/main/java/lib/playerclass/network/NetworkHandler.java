@@ -1,14 +1,31 @@
 package lib.playerclass.network;
 
-import lib.playerclass.network.CPacketSyncPlayerClass.CPacketSyncPlayerClassHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import lib.Lib;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
+@Mod.EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class NetworkHandler {
 
-	public static final SimpleNetworkWrapper NETWORK = new SimpleNetworkWrapper("sublibnetwork");
+    private static final String PROTOCOL_VERSION = "1.0";
 
-	public NetworkHandler() {
-		NETWORK.registerMessage(CPacketSyncPlayerClassHandler.class, CPacketSyncPlayerClass.class, 0, Side.CLIENT);
-	}
+    
+    public NetworkHandler() {
+        registerPackets();
+    }
+    
+    public static SimpleChannel NETWORK = NetworkRegistry.ChannelBuilder
+            .named(new ResourceLocation(Lib.MODID, "sublibnetwork")).clientAcceptedVersions(PROTOCOL_VERSION::equals)
+            .serverAcceptedVersions(PROTOCOL_VERSION::equals).networkProtocolVersion(() -> PROTOCOL_VERSION)
+            .simpleChannel();
+
+    public void registerPackets() {
+
+        int messageNumber = 0;
+        new SyncPlayerClassClient().register(messageNumber++);
+
+    }
 }
